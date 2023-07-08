@@ -3,6 +3,7 @@ on:
     push:
 jobs:
   ci:
+    timeout-minutes: 5
     strategy:
         fail-fast: false
         matrix:
@@ -16,9 +17,11 @@ jobs:
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Run image
+      - name: setup-poetry
         uses: abatilo/actions-poetry@v2
         with:
           poetry-version: ${{ matrix.poetry-version }}
+          cache: poetry
+          cache-dependency-path: poetry.lock
       - name: View poetry --help
         run: poetry --help

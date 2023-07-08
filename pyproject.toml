@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "w255-autograder"
+version = "0.1.0"
+description = ""
+authors = ["James Winegar <jameswine@gmail.com>"]
+readme = "README.md"
+packages = [{include = "w255_autograder"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.100.0"
+uvicorn = "^0.22.0"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.3.0"
+isort = "^5.12.0"
+ruff = "^0.0.277"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
