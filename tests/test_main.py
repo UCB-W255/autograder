@@ -6,4 +6,4 @@ client = TestClient(app)
 
 
 def test_good():
-    assert 1==1
+    assert 1 == 1
