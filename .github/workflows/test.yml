@@ -21,7 +21,10 @@ jobs:
         uses: abatilo/actions-poetry@v2
         with:
           poetry-version: ${{ matrix.poetry-version }}
-          cache: poetry
-          cache-dependency-path: poetry.lock
+      - name: Cache Poetry cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pypoetry
+          key: poetry-cache-${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.poetry-version  }}
       - name: View poetry --help
         run: poetry --help
