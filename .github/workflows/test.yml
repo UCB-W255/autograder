@@ -1,5 +1,5 @@
 name: test
-on: 
+on:
     push:
 jobs:
   ci:
@@ -9,15 +9,18 @@ jobs:
         matrix:
             python-version: ["3.11"]
             poetry-version: ["1.5.1"]
-    runs-on: 
+    runs-on:
         group: Default
     steps:
+        ### Checkout
         - uses: actions/checkout@v3
+        ### Python
         - name: Set up python ${{ matrix.python-version }}
           id: setup-python
           uses: actions/setup-python@v4
           with:
             python-version: ${{ matrix.python-version }}
+        ### Poetry
         - name: Load cached Poetry Binary
           id: cached-poetry-binary
           uses: actions/cache@v3
@@ -30,6 +33,7 @@ jobs:
             version: ${{ matrix.poetry-version }}
             virtualenvs-create: true
             virtualenvs-in-project: true
+        ### Virtual Env
         - name: Load cached venv
           id: cached-poetry-dependencies
           uses: actions/cache@v3
@@ -42,3 +46,31 @@ jobs:
           if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
           shell: bash
           run: poetry install --no-interaction --no-root
+        ### Pre-Commit Hooks (.pre-commit-config.yaml)
+        - name: cache pre-commit deps
+          id: cache_pre_commit
+          uses: actions/cache@v3
+          env:
+            cache-name: cache-pre-commit
+          with:
+            path: |
+              .pre_commit_venv
+              ~/.cache/pre-commit
+              key: ${{ env.cache-name }}-${{ hashFiles('.pre-commit-config.yaml','~/.cache/pre-commit/*') }}
+        - name: install pre-commit
+          if: steps.cache_pre_commit.outputs.cache-hit != 'true'
+          run: |
+            python -m venv .pre_commit_venv
+            . .pre_commit_venv/bin/activate
+            pip install --upgrade pip
+            pip install pre-commit
+            pre-commit install --install-hooks
+            pre-commit gc
+        - name: run pre-commit hooks
+          run: |
+            . .pre_commit_venv/bin/activate
+            pre-commit run --color=always --all-files
+        ### pytest
+        - name: Run Pytest
+          shell: bash
+          run: poetry run pytest

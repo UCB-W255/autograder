@@ -1,10 +1,9 @@
 [tool.poetry]
-name = "w255-autograder"
+name = "autograder"
 version = "0.1.0"
 description = ""
 authors = ["James Winegar <jameswine@gmail.com>"]
 readme = "README.md"
-packages = []
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -16,6 +15,9 @@ uvicorn = "^0.22.0"
 black = "^23.3.0"
 isort = "^5.12.0"
 ruff = "^0.0.277"
+pytest = "^7.4.0"
+httpx = "^0.24.1"
+pre-commit = "^3.3.3"
 
 [build-system]
 requires = ["poetry-core"]
