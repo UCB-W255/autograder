@@ -15,8 +15,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
+        id: setup-python
         with:
           python-version: ${{ matrix.python-version }}
+          cache: poetry
+          cache-dependency-path: |
+            **/poetry.lock
+      - run: echo '${{ steps.setup-python.outputs.cache-hit }}' 
       - name: setup-poetry
         uses: abatilo/actions-poetry@v2
         with:
