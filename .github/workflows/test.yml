@@ -21,6 +21,9 @@ jobs:
         uses: abatilo/actions-poetry@v2
         with:
           poetry-version: ${{ matrix.poetry-version }}
+      - name: install-pacakges-with-poetry
+        run: |
+            poetry install
       - name: Cache Poetry cache
         uses: actions/cache@v3
         with:
