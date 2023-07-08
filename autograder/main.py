@@ -1,8 +1,8 @@
-from fastapi import FastAPI
+import logging
 
-app = FastAPI()
+from slack_sdk import WebClient
 
+logging.basicConfig(level=logging.DEBUG)
 
-@app.get("/")
-async def root():
-    return {"message": "hello"}
+client = WebClient()
+api_response = client.api_test()
