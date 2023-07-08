@@ -56,7 +56,7 @@ jobs:
             path: |
               .pre_commit_venv
               ~/.cache/pre-commit
-              key: ${{ env.cache-name }}-${{ hashFiles('.pre-commit-config.yaml','~/.cache/pre-commit/*') }}
+            key: ${{ env.cache-name }}-${{ hashFiles('.pre-commit-config.yaml','~/.cache/pre-commit/*') }}
         - name: install pre-commit
           if: steps.cache_pre_commit.outputs.cache-hit != 'true'
           run: |
@@ -70,6 +70,7 @@ jobs:
           run: |
             . .pre_commit_venv/bin/activate
             pre-commit run --color=always --all-files
+            deactivate
         ### pytest
         - name: Run Pytest
           shell: bash
