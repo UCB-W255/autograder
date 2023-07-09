@@ -125,10 +125,12 @@ jobs:
           uses: docker/build-push-action@v4
           with:
             context: .
-            push: true
-            tags: localhost:5000/test:latest
+            push: false
+            tags: user/app:latest
+            cache-from: type=gha
+            cache-to: type=gha,mode=max
         - name: Run Container Tests
           uses: plexsystems/container-structure-test-action@v0.3.0
           with:
-            image: localhost:5000/test:latest
+            image: user/app:latest
             config: container-tests-config.yaml
