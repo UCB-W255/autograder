@@ -2,7 +2,14 @@ name: test
 on:
     push:
 jobs:
-  ci:
+  # Run test suite against python
+  ## Checks out code from repo
+  ## Installs Python, Poetry and caches binary unless we change poetry-version
+  ## installs a virtual environment and caches it if no changes to poetry.lock
+  ## Runs the pre-commit hooks provided
+  ## Injects Pytest test cases
+  ## [TODO] submit test results to Slackbot API
+  python-testing:
     timeout-minutes: 5
     strategy:
         fail-fast: false
@@ -12,15 +19,21 @@ jobs:
     runs-on:
         group: Default
     steps:
+        #################
         ### Checkout
+        #################
         - uses: actions/checkout@v3
+        #################
         ### Python
+        #################
         - name: Set up python ${{ matrix.python-version }}
           id: setup-python
           uses: actions/setup-python@v4
           with:
             python-version: ${{ matrix.python-version }}
+        #################
         ### Poetry
+        #################
         - name: Load cached Poetry Binary
           id: cached-poetry-binary
           uses: actions/cache@v3
@@ -33,7 +46,9 @@ jobs:
             version: ${{ matrix.poetry-version }}
             virtualenvs-create: true
             virtualenvs-in-project: true
+        #################
         ### Virtual Env
+        #################
         - name: Load cached venv
           id: cached-poetry-dependencies
           uses: actions/cache@v3
@@ -46,7 +61,9 @@ jobs:
           if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
           shell: bash
           run: poetry install --no-interaction --no-root
+        #################
         ### Pre-Commit Hooks (.pre-commit-config.yaml)
+        #################
         - name: cache pre-commit deps
           id: cache_pre_commit
           uses: actions/cache@v3
@@ -71,7 +88,42 @@ jobs:
             . .pre_commit_venv/bin/activate
             pre-commit run --color=always --all-files
             deactivate
+        #################
         ### pytest
+        #################
         - name: Run Pytest
           shell: bash
           run: poetry run pytest
+  # Run test suite against Dockerfile
+  ## Checks out code from repo
+  ## Installs docker build
+  ## builds container
+  ## Runs container-structure-test
+  ## [TODO] submit test results to Slackbot API
+  container-testing:
+    timeout-minutes: 5
+    strategy:
+        fail-fast: false
+    runs-on:
+        group: Default
+    steps:
+        #################
+        ### Checkout
+        #################
+        - uses: actions/checkout@v3
+        #################
+        ### container tests
+        #################
+        - name: Set up Docker Buildx
+          uses: docker/setup-buildx-action@v2
+        - name: Build and push
+          uses: docker/build-push-action@v4
+          with:
+            context: .
+            push: false
+            tags: test:latest
+        - name: Run Container Tests
+          uses: plexsystems/container-structure-test-action@v0.3.0
+          with:
+            image: test:latest
+            config: container-tests-config.yaml
