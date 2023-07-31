@@ -1,6 +1,14 @@
 name: test
 on:
     push:
+
+env:
+  working-directory: lab1
+
+defaults:
+  run:
+    working-directory: lab1
+
 jobs:
   # Run test suite against python
   ## Checks out code from repo
@@ -23,6 +31,12 @@ jobs:
         ### Checkout
         #################
         - uses: actions/checkout@v3
+        - name: Checkout tools repo
+          uses: actions/checkout@v3
+          with:
+            repository: UCB-W255/autograder
+            ref: main
+            path: ./autograder
         #################
         ### Python
         #################
@@ -64,6 +78,12 @@ jobs:
         #################
         ### Pre-Commit Hooks (.pre-commit-config.yaml)
         #################
+        - name: check autograder path
+          run: |
+            ls -la ${GITHUB_WORKSPACE}/autograder
+        - name: Add pre-commit file
+          run: |
+            mv ${GITHUB_WORKSPACE}/autograder/.pre-commit-config.yaml .
         - name: cache pre-commit deps
           id: cache_pre_commit
           uses: actions/cache@v3
@@ -89,6 +109,12 @@ jobs:
             pre-commit run --color=always --all-files
             deactivate
         #################
+        ### Add Solution test
+        #################
+        - name: Move Pytest Files
+          run: |
+            mv ./autograder/tests/${{ env.working-directory }} ./tests/
+        #################
         ### pytest
         #################
         - name: Run Pytest
@@ -106,18 +132,13 @@ jobs:
         fail-fast: false
     runs-on:
         group: Default
-    services:
-      registry:
-        image: registry:2
-        ports:
-          - 5000:5000
     steps:
         #################
         ### Checkout
         #################
         - uses: actions/checkout@v3
         #################
-        ### container tests
+        ### Container Build
         #################
         - name: Set up Docker Buildx
           uses: docker/setup-buildx-action@v2
@@ -130,8 +151,11 @@ jobs:
             tags: user/app:latest
             cache-from: type=gha
             cache-to: type=gha,mode=max
+        #################
+        ### Container Tests
+        #################
         - name: Run Container Tests
           uses: plexsystems/container-structure-test-action@v0.3.0
           with:
             image: user/app:latest
-            config: container-tests-config.yaml
+            config: ./autograder/container-tests-config.yaml
