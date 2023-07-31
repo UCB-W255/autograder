@@ -4,26 +4,32 @@ commandTests:
   - name: "Ensure grep installed"
     command: "sh"
     args: ["-c", "grep --help > /dev/null"]
+
   - name: "Ensure awk installed"
     command: "sh"
     args: ["-c", "awk -W version"]
+
   - name: "Ensure du installed"
     command: "sh"
     args: ["-c", "du --help > /dev/null"]
+
   - name: "Python Version is 3.11"
     command: "python"
     args: ["--version"]
     expectedOutput: ["Python 3.11.*"]
+
   - name: "Ensure Poetry is not installed"
     command: "sh"
     args: ["-c", "poetry --version"]
     expectedError: [".*poetry.*"]
     exitCode: 127
+
   - name: "Ensure dev dependencies are not installed"
     command: "python"
     args: ["-c", "import pytest"]
     expectedError: [".*ModuleNotFoundError.*"]
     exitCode: 1
+
   - name: "Ensure the image size is reasonable (< 500 MB)"
     command: "sh"
     args: ["-c", '[ `du -s / --exclude="/proc" | sed "s/\t.*//"` -lt 500000 ]']
@@ -36,6 +42,7 @@ fileExistenceTests:
     uid: 0
     gid: 0
     isExecutableBy: "group"
+
   - name: "apt cache files should not exist"
     path: "/var/lib/apt/lists/deb.debian.org_debian_dists_bullseye-updates_InRelease"
     shouldExist: false
