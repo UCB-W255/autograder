@@ -6,7 +6,7 @@ from autograder.main import app
 client = TestClient(app)
 
 
-test_packages = [("uvicorn", "fastapi"), ("httpx", "pytest", "isort", "black")]
+test_packages = [("uvicorn", "fastapi"), ("httpx", "pytest", "black")]
 
 
 @pytest.mark.parametrize("packages", test_packages, ids=["main", "dev"])
