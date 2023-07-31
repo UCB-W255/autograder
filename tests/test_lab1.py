@@ -12,11 +12,11 @@ test_packages = [("uvicorn", "fastapi"), ("httpx", "pytest", "isort", "black")]
 @pytest.mark.parametrize("packages", test_packages, ids=["main", "dev"])
 def test_lab1_packagecheck(packages):
     for package in packages:
-        try:
+        Try:
             __import__(package)
         except ImportError:
-            return False
-    return True
+            assert False
+    assert True
 
 def test_lab1_root():
     response = client.get("/")
