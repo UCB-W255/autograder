@@ -25,14 +25,6 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 
-@app.get("/")
-async def root():
-    user_id = get_user_by_email(client)
-    print(user_id)
-
-    return vars(client.chat_postMessage(channel=user_id, text="test"))["data"]
-
-
 @app.get("/students")
 async def get_all_students(request: Request):
     async with request.app.async_pool.connection() as conn:
