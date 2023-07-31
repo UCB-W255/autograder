@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autograder
+  namespace: github-action-runner
+spec:
+  selector:
+    matchLabels:
+      app: autograder
+  template:
+    metadata:
+      labels:
+        app: autograder
+    spec:
+      containers:
+        - name: autograder
+          image: w255mids.azurecr.io/winegarj/autograder:[LABEL]
+          resources:
+            requests:
+              memory: "32Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 3000

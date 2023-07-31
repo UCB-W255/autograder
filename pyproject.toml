@@ -10,6 +10,7 @@ python = "^3.11"
 fastapi = "^0.100.1"
 uvicorn = "^0.23.0"
 slack-sdk = "^3.21.3"
+python-dotenv = "^1.0.0"
 
 
 [tool.poetry.group.dev.dependencies]
