@@ -9,3 +9,5 @@ infra
 container-tests-config.yaml
 deploy.sh
 README.md
+*.log
+log
