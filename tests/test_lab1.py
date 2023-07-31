@@ -18,10 +18,12 @@ def test_lab1_packagecheck(packages):
             assert False
     assert True
 
+
 def test_lab1_root():
     response = client.get("/")
     assert response.status_code == 404
     assert response.json() == {"detail": "Not Found"}
+
 
 @pytest.mark.parametrize(
     "query_parameter, value",
@@ -33,12 +35,15 @@ def test_lab1_hello_endpoint_bad_parameter(query_parameter, value):
     assert response.json() == {
         "detail": [
             {
+                "input": None,
                 "loc": ["query", "name"],
-                "msg": "field required",
-                "type": "value_error.missing",
+                "msg": "Field required",
+                "type": "missing",
+                "url": "https://errors.pydantic.dev/2.1/v/missing",
             }
         ]
     }
+
 
 @pytest.mark.parametrize(
     "test_input, expected",
@@ -55,11 +60,13 @@ def test_lab1_docs_endpoint():
     assert response.status_code == 200
     assert "text/html" in response.headers["content-type"]
 
+
 def test_lab1_openapi_version_correct():
     response = client.get("/openapi.json")
     assert response.status_code == 200
     assert response.json()["openapi"][0:2] == "3."
     assert response.headers["content-type"] == "application/json"
+
 
 def test_lab1_hello_multiple_parameter_with_good_and_bad():
     response = client.get("/hello?name=james&bob=name")
