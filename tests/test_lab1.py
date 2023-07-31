@@ -12,7 +12,7 @@ test_packages = [("uvicorn", "fastapi"), ("httpx", "pytest", "isort", "black")]
 @pytest.mark.parametrize("packages", test_packages, ids=["main", "dev"])
 def test_lab1_packagecheck(packages):
     for package in packages:
-        Try:
+        try:
             __import__(package)
         except ImportError:
             assert False
