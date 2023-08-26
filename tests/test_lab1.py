@@ -6,7 +6,7 @@ from autograder.main import app
 client = TestClient(app)
 
 
-test_packages = [("uvicorn", "fastapi"), ("httpx", "pytest", "black")]
+test_packages = [("uvicorn", "fastapi"), ("httpx", "pytest", "black", "ruff")]
 
 
 @pytest.mark.parametrize("packages", test_packages, ids=["main", "dev"])
@@ -39,7 +39,7 @@ def test_lab1_hello_endpoint_bad_parameter(query_parameter, value):
                 "loc": ["query", "name"],
                 "msg": "Field required",
                 "type": "missing",
-                "url": "https://errors.pydantic.dev/2.1/v/missing",
+                "url": "https://errors.pydantic.dev/2.3/v/missing",
             }
         ]
     }
